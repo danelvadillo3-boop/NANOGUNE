@@ -8,7 +8,8 @@ E_fci_in_hf_AS22 = []
 E_fci_in_hf_AS44 = []
 E_ccsd_in_hf_AS22 = []
 E_ccsd_in_hf_AS44 = []
-
+E_uccsd_in_hf_AS22 = []
+E_uccsd_in_hf_AS44 = []
 for R in distancias:
     mol = gto.M(
         atom=f"H 0 0 {-R}; Be 0 0 0; H 0 0 {R}",
@@ -38,6 +39,10 @@ for R in distancias:
     mycc22.kernel()
     E_ccsd_in_hf_AS22.append(mycc22.e_tot)
 
+    myucc22 = cc.UCCSD(mf, frozen=frozen)
+    myucc22.kernel()
+    E_uccsd_in_hf_AS22.append(myucc22.e_tot)
+
     # ---------- AS(4,4) ----------
     cas44 = mcscf.CASCI(mf, 4, 4)
     e_fci_as44 = cas44.kernel()[0]
@@ -54,6 +59,11 @@ for R in distancias:
     mycc44.kernel()
     E_ccsd_in_hf_AS44.append(mycc44.e_tot)
 
+    myucc44 = cc.UCCSD(mf, frozen= frozen)
+    myucc44.kernel()
+    E_uccsd_in_hf_AS44.append(myucc44.e_tot)
+
+
 
 fig, ax = plt.subplots(1, 2, figsize=(12, 5))
 
@@ -62,6 +72,9 @@ ax[0].plot(distancias, E_fci_in_hf_AS22, "-", color="black",
            linewidth=2.5, label="FCI-in-HF")
 ax[0].plot(distancias, E_ccsd_in_hf_AS22, "o-", color="red",
            markersize=4, label="CCSD-in-HF")
+ax[0].plot(distancias, E_uccsd_in_hf_AS22, "o-", color="blue",
+           markersize=4, label="UCCSD-in-HF")
+
 
 ax[0].set_title("AS(2,2)")
 ax[0].set_xlabel("Distancia Be-H (Å)")
@@ -74,6 +87,8 @@ ax[1].plot(distancias, E_fci_in_hf_AS44, "-", color="black",
            linewidth=2.5, label="FCI-in-HF")
 ax[1].plot(distancias, E_ccsd_in_hf_AS44, "o-", color="red",
            markersize=4, label="CCSD-in-HF")
+ax[1].plot(distancias, E_uccsd_in_hf_AS44, "o-", color="blue",
+           markersize=4, label="UCCSD-in-HF")
 
 ax[1].set_title("AS(4,4)")
 ax[1].set_xlabel("Distancia Be-H (Å)")
